@@ -20,9 +20,9 @@ public class TimeoutBasedFailureDetector<T> extends AbstractFailureDetector<T> {
         for (T serverId : serverIds) {
             Long lastHeartbeatReceivedTime = heartbeatReceivedTimes.get(serverId);
             Long timeSinceLastHeartbeat = now - lastHeartbeatReceivedTime;
-            if (timeSinceLastHeartbeat >= timeoutNanos) {
-                markDown(serverId);
-            }
+
+            //Mark a server as down if timeSinceLastHeartbeat >= timeoutNanos
+            //Can invoke markDown method.
         }
     }
     //</codeFragment>

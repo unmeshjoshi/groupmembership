@@ -16,8 +16,8 @@ public class ZookeeperClientTest extends ZookeeperTestHarness {
         var s2 = new ServerDetails(2, InetAddressAndPort.create("10.10.10.11", 8000));
 
         ZookeeperClient client = new ZookeeperClient(zkClient);
-        client.registerBroker(s1);
-        client.registerBroker(s2);
+        client.registerServerDetails(s1);
+        client.registerServerDetails(s2);
 
         assertEquals(client.getAllBrokers().size(), 2);
     }
@@ -31,8 +31,8 @@ public class ZookeeperClientTest extends ZookeeperTestHarness {
 
         ServersChangeListener listener = new ServersChangeListener(client);
         client.subscribeBrokerChangeListener(listener);
-        client.registerBroker(s1);
-        client.registerBroker(s2);
+        client.registerServerDetails(s1);
+        client.registerServerDetails(s2);
 
         TestUtils.waitUntilTrue(()->{
             System.out.println("listener = " + listener.getLiveBrokers());

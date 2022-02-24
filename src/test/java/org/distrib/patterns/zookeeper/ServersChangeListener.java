@@ -21,16 +21,21 @@ public class ServersChangeListener implements IZkChildListener {
 
     @Override
     public void handleChildChange(String parentPath, List<String> currentChildren) throws Exception {
-      logger.info("Broker change listener fired for path " + parentPath + " invoked with " + currentChildren);
-        Set<ServerDetails> current = currentChildren.stream().map(b -> {
-            return client.getBrokerInfo(Integer.parseInt(b));
+      logger.info("Server change listener called for path " + parentPath + " invoked with " + currentChildren);
+
+      Set<ServerDetails> current = currentChildren.stream().map(b -> {
+            return client.getServerDetails(Integer.parseInt(b));
         }).collect(Collectors.toSet());
 
-        var newBrokers = new TreeSet<ServerDetails>(current);
-        newBrokers.removeAll(liveServerDetails); //list of new brokers.
+    //1)diff and find the list of new servers.
+      //find the difference between liveServerDetails set and the currentChildrenSet.
+      //The new changes should be stored in liveServerDetails Set.
 
-        var disconnectedBrokers = new TreeSet<>(liveServerDetails);
-        disconnectedBrokers.removeAll(current); //list of removed brokers.
+    //2) diff and find the list of new servers.
+    //find the difference between liveServerDetails set and the currentChildrenSet.
+    //The missing server details should be removed from liveServerDetails Set.
+        var newBrokers = new TreeSet();
+        var disconnectedBrokers = new TreeSet<ServerDetails>();
 
         addNewBrokers(newBrokers);
         removeDeadBrokers(disconnectedBrokers);

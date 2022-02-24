@@ -47,23 +47,23 @@ public class ZookeeperClient {
     String ControllerPath = "/controller";
     String ReplicaLeaderElectionPath = "/topics/replica/leader";
 
-    void registerBroker(ServerDetails serverDetails) {
-        var brokerData = JsonSerDes.serialize(serverDetails);
-        var brokerPath = getBrokerPath(serverDetails.id);
-        createEphemeralPath(zkClient, brokerPath, new String(brokerData));
+    void registerServerDetails(ServerDetails serverDetails) {
+        var serializedDetails =    ""; //serialize serverDetails and store.
+        var serverDetailsKey = getServerDetailsKeyFor(serverDetails.id);
+        createEphemeralPath(zkClient, serverDetailsKey, new String(serializedDetails));
     }
 
     Set<ServerDetails> getAllBrokers() {
         return zkClient.getChildren(BrokerIdsPath).stream().map(brokerId -> {
-                String data = zkClient.readData(getBrokerPath(Integer.valueOf(brokerId)));
+                String data = zkClient.readData(getServerDetailsKeyFor(Integer.valueOf(brokerId)));
               return JsonSerDes.deserialize(data.getBytes(), ServerDetails.class);
         }).collect(Collectors.toSet());
     }
 
 
 
-    ServerDetails getBrokerInfo(Integer brokerId) {
-        String data = zkClient.readData(getBrokerPath(brokerId));
+    ServerDetails getServerDetails(Integer brokerId) {
+        String data = zkClient.readData(getServerDetailsKeyFor(brokerId));
         return JsonSerDes.deserialize(data.getBytes(), ServerDetails.class);
     }
 
@@ -72,7 +72,7 @@ public class ZookeeperClient {
         return result;
     }
 
-    private String getBrokerPath(Integer id) {
+    private String getServerDetailsKeyFor(Integer id) {
         return BrokerIdsPath + "/" + id;
     }
 

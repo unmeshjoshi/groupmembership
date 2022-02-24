@@ -182,14 +182,8 @@ public class Gossip implements Logging {
     //<codeFragment name="merge">
     public void merge(Map<NodeId, NodeState> otherState) {
         Map<NodeId, NodeState> diff = delta(otherState, this.clusterMetadata);
-        for (NodeId diffKey : diff.keySet()) {
-            if(!this.clusterMetadata.containsKey(diffKey)) {
-                this.clusterMetadata.put(diffKey, diff.get(diffKey));
-            } else {
-                NodeState stateMap = this.clusterMetadata.get(diffKey);
-                stateMap.putAll(diff.get(diffKey));
-            }
-        }
+        //check the metadata so see if there is a key in this.clusterMetadata
+        // and put it in there if absent.
     }
     //</codeFragment>
     private int gossipFanout = 2;
